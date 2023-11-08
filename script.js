@@ -18,6 +18,7 @@ function loadScript() {
     };
 
     reader.readAsText(file, "UTF-8");
+    document.title = file.name;
   }
 }
 
