@@ -1,6 +1,6 @@
 function toZenKaku(str) {
   // 半角数字を全角数字に変換する
-  return str.replace(/[0-9]/g, function (s) {
+  return str.replace(/[A-Za-z0-9]/g, function (s) {
     return String.fromCharCode(s.charCodeAt(0) + 0xfee0);
   });
 }
@@ -103,12 +103,12 @@ function toggleCharacterHighlight(event) {
 
 // Toggle the display of the checkboxes container
 document.getElementById("toggleButton").onclick = function () {
-  var checkboxesContainer = document.getElementById("checkboxesContainer");
-  if (checkboxesContainer.style.display === "none") {
-    checkboxesContainer.style.display = "block";
+  var controlsContainer = document.getElementById("controls");
+  if (controlsContainer.style.display === "none") {
+    controlsContainer.style.display = "block";
     this.textContent = "×"; // Change button text
   } else {
-    checkboxesContainer.style.display = "none";
+    controlsContainer.style.display = "none";
     this.textContent = "≡"; // Change button text
   }
 };

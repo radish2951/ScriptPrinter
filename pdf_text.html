@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <title>台本</title>
     <style>
+      :root {
+        --font-size: 12pt;
+        --font-size-large: 14pt;
+        --height: 210mm;
+        --padding-bottom: 50mm;
+      }
       @page {
         size: A4 landscape;
         margin: 0;
@@ -13,32 +19,37 @@
         font-family: "ヒラギノ明朝 Pro", "Hiragino Mincho Pro", serif;
         margin: 0;
         padding: 0;
+        height: var(--height);
+        box-shadow: 0 0 8px gray;
       }
       .page {
-        height: 100vh; /* ページの高さをビューポートの100%にする */
+        height: calc(var(--height) - 2 * 10mm);
         box-sizing: border-box;
         overflow-y: hidden; /* 縦方向のスクロールを無効にする */
-        padding: 12% 20% 20% 20%;
-        font-size: 18px;
+        padding-bottom: var(--padding-bottom);
+        font-size: var(--font-size);
+        margin: 10mm;
       }
       .character-dialogue {
         display: inline-block; /* キャラクター名とセリフを縦に表示 */
-        margin-block: 12px; /* キャラクター名とセリフのブロック間の余白 */
+        margin-block: 3mm; /* キャラクター名とセリフのブロック間の余白 */
         height: 100%;
         position: relative;
       }
       .character-name {
         font-weight: bold;
         position: absolute;
+        height: 40mm;
+        text-align: end;
       }
       .dialogue {
-        margin-top: 150px; /* キャラクター名とセリフの間の余白 */
+        margin-top: 50mm; /* キャラクター名とセリフの間の余白 */
         display: block;
       }
       .highlighted {
         font-weight: bold;
         background-color: yellow;
-        font-size: 21px;
+        font-size: var(--font-size-large);
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
       }
@@ -65,28 +76,36 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        position: absolute;
-        top: -25px;
-        right: -25px;
+        position: fixed;
+        top: 10px;
+        right: 10px;
         font-size: 30px;
         width: 50px;
         height: 50px;
         user-select: none;
+        z-index: 20000;
       }
 
       /* 印刷時のスタイル */
       @media print {
         /* ページ番号と余白の設定 */
         @page {
-          margin: 1cm; /* 余白を1cmに設定 */
+          margin: 10mm; /* 余白を1cmに設定 */
           @bottom-right {
             content: counter(page); /* ページ番号を右下に表示 */
           }
         }
 
         /* 印刷時に非表示にする要素 */
-        #controls {
+        #controls,
+        #toggleButton {
           display: none;
+        }
+        body {
+          box-shadow: none;
+        }
+        .page {
+          margin: 0;
         }
       }
     </style>
@@ -109,6 +128,8 @@
         <div id="characterList"></div>
       </div>
     </div>
+    <!-- トグルボタンを追加 -->
+    <div id="toggleButton">×</div>
     <!-- 台本が表示されるコンテナ -->
     <div id="scriptContainer" class="page"></div>
 
