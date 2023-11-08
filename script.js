@@ -36,7 +36,7 @@ function displayScript(text) {
     if (match) {
       const character = match[1];
       const dialogue = match[2];
-      characterList.add(character); // Add character to the list for checkboxes
+      characterList.add(toZenKaku(character)); // Add character to the list for checkboxes
 
       // Create and append character name span
       const characterSpan = document.createElement("span");
