@@ -103,9 +103,28 @@ function toggleCharacterHighlight(event) {
   });
 }
 
-// ハイライトのクラスを切り替える関数
+// ハイライトのクラスを切り替え、"ボイスなし"のテキストを追加/削除する関数
 function toggleHighlight(event) {
-  event.target.classList.toggle("highlighted");
+  const dialogue = event.currentTarget; // クリックされたセリフの要素
+  dialogue.classList.toggle("highlighted");
+
+  // "ボイスなし"を示す要素が既に存在するかチェック
+  let noVoiceElement = dialogue.querySelector(".no-voice");
+
+  if (!dialogue.classList.contains("highlighted")) {
+    // ハイライトがない場合は、"ボイスなし"を追加
+    if (!noVoiceElement) {
+      noVoiceElement = document.createElement("span");
+      noVoiceElement.classList.add("no-voice");
+      noVoiceElement.textContent = "【ボイス不要】";
+      dialogue.appendChild(noVoiceElement);
+    }
+  } else {
+    // ハイライトがある場合は、"ボイスなし"を削除
+    if (noVoiceElement) {
+      noVoiceElement.remove();
+    }
+  }
 }
 
 // Toggle the display of the checkboxes container
