@@ -95,11 +95,17 @@ function toggleCharacterHighlight(event) {
       const dialogueSpan = charDialogueDiv.querySelector(".dialogue");
       if (event.target.checked) {
         dialogueSpan.classList.add("highlighted");
+        dialogueSpan.addEventListener("click", toggleHighlight); // クリックイベントを追加
       } else {
         dialogueSpan.classList.remove("highlighted");
       }
     }
   });
+}
+
+// ハイライトのクラスを切り替える関数
+function toggleHighlight(event) {
+  event.target.classList.toggle("highlighted");
 }
 
 // Toggle the display of the checkboxes container
