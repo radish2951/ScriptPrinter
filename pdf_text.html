@@ -96,17 +96,20 @@
     <div id="controls">
       <!-- トグルボタンを追加 -->
       <div id="toggleButton">×</div>
-
+      <!-- チェックボックスとファイルアップロードを含むコンテナ -->
       <div id="checkboxesContainer">
+        <!-- シナリオファイルをアップロードするための入力フィールド -->
         <input
           type="file"
-          id="csvFileInput"
-          accept=".csv"
-          onchange="loadCSV(event)"
+          id="fileInput"
+          accept=".txt"
+          onchange="loadScript()"
         />
+        <!-- キャラクターリストが表示される場所 -->
         <div id="characterList"></div>
       </div>
     </div>
+    <!-- 台本が表示されるコンテナ -->
     <div id="scriptContainer" class="page"></div>
 
     <script src="script.js"></script>

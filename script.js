@@ -5,28 +5,24 @@ function toZenKaku(str) {
   });
 }
 
-function loadCSV(event) {
-  const input = event.target;
+// テキストファイルを読み込んで台本を表示する関数
+function loadScript() {
+  const input = document.getElementById("fileInput");
   if ("files" in input && input.files.length > 0) {
-    readFileContent(input.files[0])
-      .then((content) => {
-        parseCSV(content);
-      })
-      .catch((error) => console.log(error));
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      const text = e.target.result;
+      displayScript(text);
+    };
+
+    reader.readAsText(file, "UTF-8");
   }
 }
 
-function readFileContent(file) {
-  const reader = new FileReader();
-  return new Promise((resolve, reject) => {
-    reader.onload = (event) => resolve(event.target.result);
-    reader.onerror = (error) => reject(error);
-    reader.readAsText(file, "UTF-8");
-  });
-}
-
-function parseCSV(csvData) {
-  const lines = csvData.split(/\r\n|\n/);
+function displayScript(text) {
+  const lines = text.split(/\r\n|\n/);
   const scriptContainer = document.getElementById("scriptContainer");
   const characterList = new Set(); // Use a set to avoid duplicates
   scriptContainer.innerHTML = ""; // Clear previous content
@@ -35,47 +31,59 @@ function parseCSV(csvData) {
     const charDialogueDiv = document.createElement("div");
     charDialogueDiv.className = "character-dialogue";
 
-    if (line.trim()) {
-      const [character, dialogue] = line.split(",");
-      if (character) {
-        characterList.add(character.replace(/"/g, "")); // Remove double quotes
-        const characterSpan = document.createElement("span");
-        characterSpan.className = "character-name";
-        characterSpan.textContent = toZenKaku(character.replace(/"/g, ""));
-        charDialogueDiv.appendChild(characterSpan);
-      }
+    const match = line.match(/^(.*?)「(.*?)」$/);
+    if (match) {
+      const character = match[1];
+      const dialogue = match[2];
+      characterList.add(character); // Add character to the list for checkboxes
 
+      // Create and append character name span
+      const characterSpan = document.createElement("span");
+      characterSpan.className = "character-name";
+      characterSpan.textContent = toZenKaku(character);
+      charDialogueDiv.appendChild(characterSpan);
+
+      // Create and append dialogue span
       const dialogueSpan = document.createElement("span");
       dialogueSpan.className = "dialogue";
-      dialogueSpan.innerHTML = toZenKaku(
-        dialogue.replace(/"/g, "").replace(/\\n/g, "<br>")
-      ); // Replace escaped newlines with <br>
+      dialogueSpan.textContent = toZenKaku(dialogue);
+      charDialogueDiv.appendChild(dialogueSpan);
+    } else {
+      // If the line doesn't match the expected format, treat it as a dialogue-only line
+      const dialogueSpan = document.createElement("span");
+      dialogueSpan.className = "dialogue";
+      dialogueSpan.textContent = toZenKaku(line);
       charDialogueDiv.appendChild(dialogueSpan);
     }
 
     scriptContainer.appendChild(charDialogueDiv);
   });
 
-  displayCharacterCheckboxes(characterList);
+  displayCharacterCheckboxes(characterList); // Display checkboxes after processing the script
 }
 
+// Displays checkboxes for each character in the script
 function displayCharacterCheckboxes(characterList) {
   const listContainer = document.getElementById("characterList");
   listContainer.innerHTML = ""; // Clear previous content
 
   characterList.forEach((character) => {
-    const label = document.createElement("label");
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.value = character;
-    checkbox.onchange = toggleCharacterHighlight;
+    if (character.trim() !== "") {
+      // Don't create a checkbox for empty character names
+      const label = document.createElement("label");
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.value = character;
+      checkbox.onchange = toggleCharacterHighlight;
 
-    label.appendChild(checkbox);
-    label.appendChild(document.createTextNode(character));
-    listContainer.appendChild(label);
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode(character));
+      listContainer.appendChild(label);
+    }
   });
 }
 
+// Toggle the highlighted class for the dialogues of the selected character
 function toggleCharacterHighlight(event) {
   const character = event.target.value;
   const dialogues = document.querySelectorAll(".character-dialogue");
@@ -92,14 +100,15 @@ function toggleCharacterHighlight(event) {
     }
   });
 }
-// トグルボタンのクリックイベントハンドラを設定
+
+// Toggle the display of the checkboxes container
 document.getElementById("toggleButton").onclick = function () {
   var checkboxesContainer = document.getElementById("checkboxesContainer");
   if (checkboxesContainer.style.display === "none") {
     checkboxesContainer.style.display = "block";
-    this.textContent = "×"; // ボタンのテキストを変更
+    this.textContent = "×"; // Change button text
   } else {
     checkboxesContainer.style.display = "none";
-    this.textContent = "≡"; // ボタンのテキストを変更
+    this.textContent = "≡"; // Change button text
   }
 };
