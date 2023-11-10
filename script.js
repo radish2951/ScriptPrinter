@@ -14,7 +14,7 @@ function loadScript() {
 
     reader.onload = function (e) {
       const text = e.target.result;
-      displayScript(text);
+      displayScript(text.replace(/\r\n|\r|\n/g, "\n"));
     };
 
     reader.readAsText(file, "UTF-8");
@@ -23,44 +23,63 @@ function loadScript() {
 }
 
 function displayScript(text) {
-  const lines = text.split(/\r\n|\n/);
+  // HTML要素をクリア
   const scriptContainer = document.getElementById("scriptContainer");
-  const characterList = new Set(); // Use a set to avoid duplicates
-  scriptContainer.innerHTML = ""; // Clear previous content
+  const characterList = new Set();
+  scriptContainer.innerHTML = "";
 
-  lines.forEach((line) => {
-    const charDialogueDiv = document.createElement("div");
-    charDialogueDiv.className = "character-dialogue";
+  // 正規表現パターンを個別に定義
+  const patterns = {
+    pattern1: /^(.+?)「(.+?)」$/gm,
+    pattern2: /^【(.+?)】\s+?((?:.+?\n){1,}\n+^)/gm,
+  };
 
-    const match = line.match(/^(.*?)「(.*?)」$/);
-    if (match) {
-      const character = match[1];
-      const dialogue = match[2];
-      characterList.add(toZenKaku(character)); // Add character to the list for checkboxes
+  const selectedPattern = patterns.pattern1;
+  let lastIndex = 0; // マッチングの開始位置を追跡
 
-      // Create and append character name span
-      const characterSpan = document.createElement("span");
-      characterSpan.className = "character-name";
-      characterSpan.textContent = toZenKaku(character);
-      charDialogueDiv.appendChild(characterSpan);
-
-      // Create and append dialogue span
-      const dialogueSpan = document.createElement("span");
-      dialogueSpan.className = "dialogue";
-      dialogueSpan.textContent = toZenKaku(dialogue);
-      charDialogueDiv.appendChild(dialogueSpan);
-    } else {
-      // If the line doesn't match the expected format, treat it as a dialogue-only line
-      const dialogueSpan = document.createElement("span");
-      dialogueSpan.className = "dialogue";
-      dialogueSpan.textContent = toZenKaku(line);
-      charDialogueDiv.appendChild(dialogueSpan);
+  let match;
+  while ((match = selectedPattern.exec(text)) !== null) {
+    // マッチする前のテキストを追加
+    const textBeforeMatch = text.slice(lastIndex + 1, match.index - 1);
+    if (lastIndex + 1 < match.index) {
+      textBeforeMatch.split("\n").forEach((line) => {
+        addDialogueToContainer("", line, scriptContainer);
+      });
     }
 
-    scriptContainer.appendChild(charDialogueDiv);
+    // マッチしたテキストを追加
+    const characterName = match[1].trim();
+    const dialogue = match[2].trim();
+    addDialogueToContainer(characterName, dialogue, scriptContainer);
+    characterList.add(toZenKaku(characterName));
+
+    lastIndex = selectedPattern.lastIndex;
+  }
+
+  // 最後のマッチ後のテキストを追加
+  const textAfterLastMatch = text.slice(lastIndex + 1);
+  textAfterLastMatch.split("\n").forEach((line) => {
+    addDialogueToContainer("", line, scriptContainer);
   });
 
-  displayCharacterCheckboxes(characterList); // Display checkboxes after processing the script
+  displayCharacterCheckboxes(characterList);
+}
+
+function addDialogueToContainer(character, dialogue, container) {
+  const charDialogueDiv = document.createElement("div");
+  charDialogueDiv.className = "character-dialogue";
+
+  const characterSpan = document.createElement("span");
+  characterSpan.className = "character-name";
+  characterSpan.textContent = toZenKaku(character);
+
+  const dialogueSpan = document.createElement("span");
+  dialogueSpan.className = "dialogue";
+  dialogueSpan.textContent = toZenKaku(dialogue);
+
+  charDialogueDiv.appendChild(characterSpan);
+  charDialogueDiv.appendChild(dialogueSpan);
+  container.appendChild(charDialogueDiv);
 }
 
 // Displays checkboxes for each character in the script
