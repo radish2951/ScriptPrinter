@@ -48,15 +48,17 @@
       }
       .highlighted {
         font-weight: bold;
-        background-color: yellow;
-        font-size: var(--font-size-large);
-        -webkit-print-color-adjust: exact;
-        color-adjust: exact;
         user-select: none;
         cursor: pointer;
       }
+      .highlighted .dialogue {
+        font-size: var(--font-size-large);
+        background-color: yellow;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+      }
       .highlighted:hover {
-        opacity: 0.7;
+        opacity: 0.5;
       }
       /* 画面上での表示スタイル */
       #controls {

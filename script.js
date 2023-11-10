@@ -111,12 +111,11 @@ function toggleCharacterHighlight(event) {
   dialogues.forEach((charDialogueDiv) => {
     const characterSpan = charDialogueDiv.querySelector(".character-name");
     if (characterSpan && characterSpan.textContent === character) {
-      const dialogueSpan = charDialogueDiv.querySelector(".dialogue");
       if (event.target.checked) {
-        dialogueSpan.classList.add("highlighted");
-        dialogueSpan.addEventListener("click", toggleHighlight); // クリックイベントを追加
+        charDialogueDiv.classList.add("highlighted");
+        charDialogueDiv.addEventListener("click", toggleHighlight); // クリックイベントを追加
       } else {
-        dialogueSpan.classList.remove("highlighted");
+        charDialogueDiv.classList.remove("highlighted");
       }
     }
   });
@@ -136,7 +135,7 @@ function toggleHighlight(event) {
       noVoiceElement = document.createElement("span");
       noVoiceElement.classList.add("no-voice");
       noVoiceElement.textContent = "【ボイス不要】";
-      dialogue.appendChild(noVoiceElement);
+      dialogue.querySelector(".dialogue").appendChild(noVoiceElement);
     }
   } else {
     // ハイライトがある場合は、"ボイスなし"を削除
