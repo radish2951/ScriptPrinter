@@ -6,7 +6,7 @@
     <style>
       :root {
         --font-size: 12pt;
-        --font-size-large: 14pt;
+        --font-size-large: 16pt;
         --height: 210mm;
         --padding-bottom: 50mm;
       }
@@ -51,11 +51,14 @@
         user-select: none;
         cursor: pointer;
       }
-      .highlighted .dialogue {
-        font-size: var(--font-size-large);
-        background-color: yellow;
+      .highlighted .character-name {
+        background-color: gray;
+        color: white;
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
+      }
+      .highlighted .dialogue {
+        font-size: var(--font-size-large);
       }
       .highlighted:hover {
         opacity: 0.5;
