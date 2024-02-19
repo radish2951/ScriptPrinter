@@ -2,7 +2,7 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <title>台本</title>
+    <title>Script Printer - シナリオテキストを収録用台本に変換</title>
     <style>
       :root {
         --font-size: 12pt;
@@ -10,6 +10,7 @@
         --height: 210mm;
         --padding-bottom: 40mm;
         --margin: 10mm;
+        --highlight-color: gray;
       }
       @page {
         size: A4 landscape;
@@ -53,16 +54,13 @@
         cursor: pointer;
       }
       .highlighted .character-name {
-        background-color: gray;
+        background-color: var(--highlight-color);
         color: white;
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
       }
       .highlighted .dialogue {
         font-size: var(--font-size-large);
-      }
-      .highlighted:hover {
-        opacity: 0.5;
       }
 
       /* サマリのスタイル */
@@ -75,16 +73,23 @@
         }
 
         #characterList {
-          color: gray;
+          color: var(--highlight-color);
+          user-select: none;
         }
         label {
           padding: 2px;
           margin: 2px;
           display: inline-block;
           cursor: pointer;
+          border: 1px solid transparent;
+
           &:has(input:checked) {
-          background-color: gray; /* チェックされたキャラクターの背景色 */
+          background-color: var(--highlight-color); /* チェックされたキャラクターの背景色 */
           color: white;
+          }
+
+          &:hover {
+            border: 1px solid var(--highlight-color);
           }
           input {
             display: none;
