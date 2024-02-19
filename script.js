@@ -107,12 +107,20 @@ function displayCharacterCheckboxes(characterList) {
 // Toggle the highlighted class for the dialogues of the selected character
 function toggleCharacterHighlight(event) {
   const character = event.target.value;
-  const dialogues = document.querySelectorAll(".character-dialogue");
+  const isChecked = event.target.checked; // チェック状態を取得
 
-  dialogues.forEach((charDialogueDiv) => {
+  // 対象のキャラクター名を含む全てのチェックボックスを操作
+  document.querySelectorAll('#characterList input[type="checkbox"]').forEach(checkbox => {
+    if (checkbox.value.includes(character)) {
+      checkbox.checked = isChecked; // 条件に一致するチェックボックスを更新
+    }
+  });
+
+  // 元々あったダイアログのハイライト更新処理
+  document.querySelectorAll(".character-dialogue").forEach((charDialogueDiv) => {
     const characterSpan = charDialogueDiv.querySelector(".character-name");
-    if (characterSpan && characterSpan.textContent === character) {
-      if (event.target.checked) {
+    if (characterSpan && characterSpan.textContent.includes(character)) {
+      if (isChecked) {
         charDialogueDiv.classList.add("highlighted");
         charDialogueDiv.addEventListener("click", toggleHighlight); // クリックイベントを追加
       } else {
