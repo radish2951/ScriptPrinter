@@ -7,10 +7,12 @@
       :root {
         --font-size: 12pt;
         --font-size-large: 15pt;
+        --font-serif: "ヒラギノ明朝 Pro", "Hiragino Mincho Pro", serif;
+        --font-sans: "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", sans-serif;
         --height: 210mm;
         --padding-bottom: 40mm;
         --margin: 10mm;
-        --highlight-color: gray;
+        --highlight-color: #666666;
       }
       @page {
         size: A4 landscape;
@@ -18,7 +20,7 @@
       }
       body {
         writing-mode: vertical-rl;
-        font-family: "ヒラギノ明朝 Pro", "Hiragino Mincho Pro", serif;
+        font-family: var(--font-serif);
         margin: 0;
         padding: 0;
         height: var(--height);
@@ -39,6 +41,7 @@
       }
       .character-name {
         font-weight: bold;
+        font-family: var(--font-sans);
         position: absolute;
         height: 40mm;
         text-align: end;
@@ -73,6 +76,7 @@
         }
 
         #characterList {
+          font-family: var(--font-sans);
           color: var(--highlight-color);
           user-select: none;
         }
