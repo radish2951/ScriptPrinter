@@ -128,6 +128,7 @@ function toggleCharacterHighlight(event) {
         charDialogueDiv.addEventListener("click", toggleHighlight); // クリックイベントを追加
       } else {
         charDialogueDiv.classList.remove("highlighted");
+        charDialogueDiv.removeEventListener("click", toggleHighlight);
       }
     }
   });
