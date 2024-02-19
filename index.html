@@ -6,9 +6,10 @@
     <style>
       :root {
         --font-size: 12pt;
-        --font-size-large: 16pt;
+        --font-size-large: 15pt;
         --height: 210mm;
-        --padding-bottom: 50mm;
+        --padding-bottom: 40mm;
+        --margin: 10mm;
       }
       @page {
         size: A4 landscape;
@@ -20,15 +21,14 @@
         margin: 0;
         padding: 0;
         height: var(--height);
-        box-shadow: 0 0 8px gray;
       }
       .page {
-        height: calc(var(--height) - 2 * 10mm);
+        height: calc(var(--height) - 2 * var(--margin));
         box-sizing: border-box;
         overflow-y: hidden; /* 縦方向のスクロールを無効にする */
         padding-bottom: var(--padding-bottom);
         font-size: var(--font-size);
-        margin: 10mm;
+        margin: var(--margin);
       }
       .character-dialogue {
         display: inline-block; /* キャラクター名とセリフを縦に表示 */
@@ -41,6 +41,7 @@
         position: absolute;
         height: 40mm;
         text-align: end;
+        padding-bottom: 2mm;
       }
       .dialogue {
         margin-top: 50mm; /* キャラクター名とセリフの間の余白 */
@@ -96,26 +97,42 @@
         z-index: 200;
       }
 
+      /* サマリのスタイル */
+      #scriptSummary {
+        margin: var(--margin);
+        p {
+          color: gray;
+        }
+        span {
+          padding: 2px;
+          margin: 2px;
+          display: inline-block;
+        }
+        .checked-character {
+          background-color: gray; /* チェックされたキャラクターの背景色 */
+          color: white;
+          }
+        .unchecked-character {
+          color: grey; /* 未チェックのキャラクターをグレーに */
+         }
+      }
+
       /* 印刷時のスタイル */
       @media print {
         /* ページ番号と余白の設定 */
         @page {
-          margin: 10mm; /* 余白を1cmに設定 */
-          @bottom-right {
-            content: counter(page); /* ページ番号を右下に表示 */
-          }
-        }
+          margin: var(--margin); /* 余白を1cmに設定 */
+         }
 
         /* 印刷時に非表示にする要素 */
         #controls,
         #toggleButton {
           display: none;
-        }
-        body {
-          box-shadow: none;
+          opacity: 0;
         }
         .page {
           margin: 0;
+          height: var(--height);
         }
       }
     </style>
@@ -132,12 +149,16 @@
           accept=".txt"
           onchange="loadScript()"
         />
+        <!-- 印刷ボタンを追加 -->
+        <button onclick="window.print()">印刷</button>
         <!-- キャラクターリストが表示される場所 -->
         <div id="characterList"></div>
       </div>
     </div>
     <!-- トグルボタンを追加 -->
     <div id="toggleButton">×</div>
+    <!-- 概要を表示 -->
+    <div id="scriptSummary"></div>
     <!-- 台本が表示されるコンテナ -->
     <div id="scriptContainer" class="page"></div>
 

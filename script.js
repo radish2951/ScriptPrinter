@@ -19,6 +19,7 @@ function loadScript() {
 
     reader.readAsText(file, "UTF-8");
     document.title = file.name;
+    updateScriptSummary(); // メタデータの更新
   }
 }
 
@@ -35,7 +36,7 @@ function displayScript(text) {
   };
 
   const selectedPattern = patterns.pattern1;
-  let lastIndex = 0; // マッチングの開始位置を追跡
+  let lastIndex = -1; // マッチングの開始位置を追跡
 
   let match;
   while ((match = selectedPattern.exec(text)) !== null) {
@@ -119,6 +120,8 @@ function toggleCharacterHighlight(event) {
       }
     }
   });
+
+  updateScriptSummary(); // メタデータの更新
 }
 
 // ハイライトのクラスを切り替え、"ボイスなし"のテキストを追加/削除する関数
@@ -156,3 +159,26 @@ document.getElementById("toggleButton").onclick = function () {
     this.textContent = "≡"; // Change button text
   }
 };
+
+// サマリを表示
+function updateScriptSummary() {
+  const scriptSummary = document.getElementById('scriptSummary');
+  const fileInput = document.getElementById('fileInput');
+  const allCharacters = Array.from(document.querySelectorAll('#characterList input')).map(input => input.value);
+  const checkedCharacters = new Set(Array.from(document.querySelectorAll('#characterList input:checked')).map(input => input.value));
+
+  // キャラクターリストのHTMLを構築
+  let charactersHtml = allCharacters.map(character => {
+    if (checkedCharacters.has(character)) {
+      return `<span class="checked-character">${character}</span>`;
+    } else {
+      return `<span class="unchecked-character">${character}</span>`;
+    }
+  }).join('、');
+
+  // メタデータの内容を更新
+  scriptSummary.innerHTML = `
+    <h1>${fileInput.files.length ? fileInput.files[0].name : '未選択'}</h1>
+    <p>キャラクターリスト ${charactersHtml || 'キャラクターが選択されていません'}</p>
+  `;
+}
