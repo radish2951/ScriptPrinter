@@ -64,57 +64,32 @@
       .highlighted:hover {
         opacity: 0.5;
       }
-      /* 画面上での表示スタイル */
-      #controls {
-        position: fixed;
-        top: 30px;
-        right: 30px;
-        background-color: white;
-        padding: 30px;
-        border-radius: 5px;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-        display: grid;
-        z-index: 100;
-      }
-      #characterList {
-        display: grid;
-      }
-      /* トグルボタンのスタイル */
-      #toggleButton {
-        cursor: pointer; /* カーソルをポインタに */
-        background-color: #f0f0f0; /* 背景色 */
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        font-size: 30px;
-        width: 50px;
-        height: 50px;
-        user-select: none;
-        z-index: 200;
-      }
 
       /* サマリのスタイル */
       #scriptSummary {
         margin: var(--margin);
-        p {
+        input {
+          font: inherit;
+          text-overflow: inherit;
+          white-space: normal;
+        }
+
+        #characterList {
           color: gray;
         }
-        span {
+        label {
           padding: 2px;
           margin: 2px;
           display: inline-block;
-        }
-        .checked-character {
+          cursor: pointer;
+          &:has(input:checked) {
           background-color: gray; /* チェックされたキャラクターの背景色 */
           color: white;
           }
-        .unchecked-character {
-          color: grey; /* 未チェックのキャラクターをグレーに */
-         }
+          input {
+            display: none;
+          };
+        }
       }
 
       /* 印刷時のスタイル */
@@ -125,10 +100,9 @@
          }
 
         /* 印刷時に非表示にする要素 */
-        #controls,
-        #toggleButton {
+
+        #scriptSummary input::file-selector-button {
           display: none;
-          opacity: 0;
         }
         .page {
           margin: 0;
@@ -138,30 +112,15 @@
     </style>
   </head>
   <body>
-    <!-- 操作系の要素のコンテナ -->
-    <div id="controls">
-      <!-- チェックボックスとファイルアップロードを含むコンテナ -->
-      <div id="checkboxesContainer">
-        <!-- シナリオファイルをアップロードするための入力フィールド -->
-        <input
-          type="file"
-          id="fileInput"
-          accept=".txt"
-          onchange="loadScript()"
-        />
-        <!-- 印刷ボタンを追加 -->
-        <button onclick="window.print()">印刷</button>
-        <!-- キャラクターリストが表示される場所 -->
-        <div id="characterList"></div>
-      </div>
-    </div>
-    <!-- トグルボタンを追加 -->
-    <div id="toggleButton">×</div>
     <!-- 概要を表示 -->
-    <div id="scriptSummary"></div>
+    <div id="scriptSummary">
+      <h1>
+        <input type="file" id="fileInput" accept=".txt" onchange="loadScript()" />
+      </h1>
+      <p id="characterList"></p>
+    </div>
     <!-- 台本が表示されるコンテナ -->
     <div id="scriptContainer" class="page"></div>
-
     <script src="script.js"></script>
   </body>
 </html>

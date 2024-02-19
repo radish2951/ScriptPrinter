@@ -19,7 +19,6 @@ function loadScript() {
 
     reader.readAsText(file, "UTF-8");
     document.title = file.name;
-    updateScriptSummary(); // メタデータの更新
   }
 }
 
@@ -86,9 +85,9 @@ function addDialogueToContainer(character, dialogue, container) {
 // Displays checkboxes for each character in the script
 function displayCharacterCheckboxes(characterList) {
   const listContainer = document.getElementById("characterList");
-  listContainer.innerHTML = ""; // Clear previous content
+  listContainer.innerHTML = "キャラクターリスト "; // Clear previous content
 
-  characterList.forEach((character) => {
+  Array.from(characterList).forEach((character, index) => {
     if (character.trim() !== "") {
       // Don't create a checkbox for empty character names
       const label = document.createElement("label");
@@ -100,6 +99,10 @@ function displayCharacterCheckboxes(characterList) {
       label.appendChild(checkbox);
       label.appendChild(document.createTextNode(character));
       listContainer.appendChild(label);
+
+      if (index < characterList.size - 1) {
+        listContainer.appendChild(document.createTextNode("、"));
+      }
     }
   });
 }
@@ -128,8 +131,6 @@ function toggleCharacterHighlight(event) {
       }
     }
   });
-
-  updateScriptSummary(); // メタデータの更新
 }
 
 // ハイライトのクラスを切り替え、"ボイスなし"のテキストを追加/削除する関数
@@ -154,39 +155,4 @@ function toggleHighlight(event) {
       noVoiceElement.remove();
     }
   }
-}
-
-// Toggle the display of the checkboxes container
-document.getElementById("toggleButton").onclick = function () {
-  var controlsContainer = document.getElementById("controls");
-  if (controlsContainer.style.display === "none") {
-    controlsContainer.style.display = "block";
-    this.textContent = "×"; // Change button text
-  } else {
-    controlsContainer.style.display = "none";
-    this.textContent = "≡"; // Change button text
-  }
-};
-
-// サマリを表示
-function updateScriptSummary() {
-  const scriptSummary = document.getElementById('scriptSummary');
-  const fileInput = document.getElementById('fileInput');
-  const allCharacters = Array.from(document.querySelectorAll('#characterList input')).map(input => input.value);
-  const checkedCharacters = new Set(Array.from(document.querySelectorAll('#characterList input:checked')).map(input => input.value));
-
-  // キャラクターリストのHTMLを構築
-  let charactersHtml = allCharacters.map(character => {
-    if (checkedCharacters.has(character)) {
-      return `<span class="checked-character">${character}</span>`;
-    } else {
-      return `<span class="unchecked-character">${character}</span>`;
-    }
-  }).join('、');
-
-  // メタデータの内容を更新
-  scriptSummary.innerHTML = `
-    <h1>${fileInput.files.length ? fileInput.files[0].name : '未選択'}</h1>
-    <p>キャラクターリスト ${charactersHtml || 'キャラクターが選択されていません'}</p>
-  `;
 }
