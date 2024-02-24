@@ -69,10 +69,14 @@
       /* サマリのスタイル */
       #scriptSummary {
         margin: var(--margin);
-        input {
+        input, textarea {
           font: inherit;
-          text-overflow: inherit;
-          white-space: normal;
+          background: none;
+          padding: 0;
+          border: none;
+          height: 100%;
+          width: auto;
+          resize: none;
         }
 
         #characterList {
@@ -107,12 +111,6 @@
         @page {
           margin: var(--margin); /* 余白を1cmに設定 */
          }
-
-        /* 印刷時に非表示にする要素 */
-
-        #scriptSummary input::file-selector-button {
-          display: none;
-        }
         .page {
           margin: 0;
           height: var(--height);
@@ -125,6 +123,7 @@
     <div id="scriptSummary">
       <h1>
         <input type="file" id="fileInput" accept=".txt" onchange="loadScript()" />
+        <textarea id="fileTitle"></textarea>
       </h1>
       <p id="characterList"></p>
     </div>

@@ -8,6 +8,7 @@ function toZenKaku(str) {
 // テキストファイルを読み込んで台本を表示する関数
 function loadScript() {
   const input = document.getElementById("fileInput");
+  const title = document.getElementById("fileTitle");
   if ("files" in input && input.files.length > 0) {
     const file = input.files[0];
     const reader = new FileReader();
@@ -18,7 +19,17 @@ function loadScript() {
     };
 
     reader.readAsText(file, "UTF-8");
-    document.title = file.name;
+    document.title = title.value = file.name;
+    input.style.display = "none";
+    title.style.width = 0;
+    title.style.width = title.scrollWidth + "px";
+
+    title.addEventListener("input", e => {
+      const title = e.target;
+      document.title = title.value;
+      title.style.width = 0;
+      title.style.width = title.scrollWidth + "px";
+    });
   }
 }
 
