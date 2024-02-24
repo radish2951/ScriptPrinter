@@ -14,24 +14,18 @@
         --margin: 10mm;
         --highlight-color: #666666;
       }
-      @page {
-        size: A4 landscape;
-        margin: 0;
-      }
       body {
         writing-mode: vertical-rl;
         font-family: var(--font-serif);
-        margin: 0;
+        margin: var(--margin);
         padding: 0;
         height: var(--height);
+        overflow-y: hidden;
       }
       .page {
-        height: calc(var(--height) - 2 * var(--margin));
         box-sizing: border-box;
-        overflow-y: hidden; /* 縦方向のスクロールを無効にする */
         padding-bottom: var(--padding-bottom);
         font-size: var(--font-size);
-        margin: var(--margin);
       }
       .character-dialogue {
         display: inline-block; /* キャラクター名とセリフを縦に表示 */
@@ -68,7 +62,7 @@
 
       /* サマリのスタイル */
       #scriptSummary {
-        margin: var(--margin);
+        margin-left: var(--margin);
         input, textarea {
           font: inherit;
           background: none;
@@ -107,13 +101,12 @@
 
       /* 印刷時のスタイル */
       @media print {
-        /* ページ番号と余白の設定 */
         @page {
-          margin: var(--margin); /* 余白を1cmに設定 */
+          size: A4 landscape;
+          margin: var(--margin);
          }
-        .page {
+        body {
           margin: 0;
-          height: var(--height);
         }
       }
     </style>
