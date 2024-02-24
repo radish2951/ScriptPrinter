@@ -21,6 +21,7 @@ function loadScript() {
     reader.readAsText(file, "UTF-8");
     document.title = title.value = file.name;
     input.style.display = "none";
+    title.removeAttribute("style");
     title.style.width = 0;
     title.style.width = title.scrollWidth + "px";
 
