@@ -58,6 +58,13 @@
       .highlighted .dialogue {
         font-size: var(--font-size-large);
       }
+      .dialogue-index {
+        position: absolute;
+        right: calc(-1.1 *  var(--font-size));
+        color: var(--highlight-color);
+        font-family: var(--font-sans);
+        font-size: calc(0.8 * var(--font-size));
+      }
 
       /* サマリのスタイル */
       #scriptSummary {
@@ -72,7 +79,7 @@
           resize: none;
         }
 
-        #characterList {
+        #characterList, #dialogueCountResult {
           font-family: var(--font-sans);
           color: var(--highlight-color);
           user-select: none;
@@ -119,6 +126,7 @@
         <textarea id="fileTitle" style="display:none;"></textarea>
       </h1>
       <p id="characterList"></p>
+      <p id="dialogueCountResult"></p>
     </div>
     <!-- 台本が表示されるコンテナ -->
     <div id="scriptContainer" class="page"></div>

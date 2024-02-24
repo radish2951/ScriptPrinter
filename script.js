@@ -106,7 +106,10 @@ function displayCharacterCheckboxes(characterList) {
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.value = character;
-      checkbox.onchange = toggleCharacterHighlight;
+      checkbox.onchange = function(event) {
+        toggleCharacterHighlight(event);
+        calculateSelectedCharactersDialogues();
+      };
 
       label.appendChild(checkbox);
       label.appendChild(document.createTextNode(character));
@@ -168,4 +171,38 @@ function toggleHighlight(event) {
       noVoiceElement.remove();
     }
   }
+
+  calculateSelectedCharactersDialogues();
+}
+
+// 選択されたキャラクターのセリフに番号をつける関数
+function calculateSelectedCharactersDialogues() {
+  const selectedCharacters = new Set();
+  document.querySelectorAll('#characterList input[type="checkbox"]:checked').forEach(checkbox => {
+    selectedCharacters.add(checkbox.value);
+  });
+
+  let dialogueNumber = 0;
+  document.querySelectorAll(".character-dialogue").forEach((dialogueDiv) => {
+    const characterSpan = dialogueDiv.querySelector(".character-name");
+    let dialogueIndex = dialogueDiv.querySelector(".dialogue-index");
+    
+    if (selectedCharacters.has(characterSpan.textContent) && dialogueDiv.classList.contains("highlighted")) {
+      dialogueNumber++;
+      // 既存の番号があれば更新、なければ新しく追加
+      if (!dialogueIndex) {
+        dialogueIndex = document.createElement("span");
+        dialogueIndex.classList.add("dialogue-index");
+        dialogueDiv.appendChild(dialogueIndex);
+      }
+      dialogueIndex.textContent = dialogueNumber.toString().padStart(4, "0");
+    } else {
+      // 選択されていないキャラクターのセリフ番号を削除
+      if (dialogueIndex) dialogueIndex.remove();
+    }
+  });
+
+  // 結果を表示する要素を更新
+  const resultDisplay = document.getElementById("dialogueCountResult");
+  resultDisplay.textContent = "ワード数 " + toZenKaku(String(dialogueNumber));
 }
