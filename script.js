@@ -5,6 +5,12 @@ function toZenKaku(str) {
   });
 }
 
+function preprocessText(text) {
+  return text.split(/\r\n|\r|\n/g).map(line => {
+    return line.trim();
+  }).join("\n");
+}
+
 // テキストファイルを読み込んで台本を表示する関数
 function loadScript() {
   const input = document.getElementById("fileInput");
@@ -15,7 +21,7 @@ function loadScript() {
 
     reader.onload = function (e) {
       const text = e.target.result;
-      displayScript(text.replace(/\r\n|\r|\n/g, "\n"));
+      displayScript(preprocessText(text));
     };
 
     reader.readAsText(file, "UTF-8");
