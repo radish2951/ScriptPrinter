@@ -52,15 +52,15 @@ function displayScript(text) {
     pattern2: /^【(.+?)】\s+?((?:.+?\n){1,}\n+^)/gm,
   };
 
-  const selectedPattern = patterns.pattern1;
-  let lastIndex = -1; // マッチングの開始位置を追跡
+  const pattern = patterns.pattern1;
+  let lastIndex = 0; // マッチングの開始位置を追跡
 
   let match;
-  while ((match = selectedPattern.exec(text)) !== null) {
+  while ((match = pattern.exec(text)) !== null) {
     // マッチする前のテキストを追加
-    const textBeforeMatch = text.slice(lastIndex + 1, match.index - 1);
-    if (lastIndex + 1 < match.index) {
-      textBeforeMatch.split("\n").forEach((line) => {
+    if (lastIndex < match.index) {
+      const textBeforeMatch = text.slice(lastIndex, match.index - 1);
+      textBeforeMatch.split("\n").forEach(line => {
         addDialogueToContainer("", line, scriptContainer);
       });
     }
@@ -71,12 +71,12 @@ function displayScript(text) {
     addDialogueToContainer(characterName, dialogue, scriptContainer);
     characterList.add(toZenKaku(characterName));
 
-    lastIndex = selectedPattern.lastIndex;
+    lastIndex = pattern.lastIndex + 1;
   }
 
   // 最後のマッチ後のテキストを追加
-  const textAfterLastMatch = text.slice(lastIndex + 1);
-  textAfterLastMatch.split("\n").forEach((line) => {
+  const textAfterLastMatch = text.slice(lastIndex);
+  textAfterLastMatch.split("\n").forEach(line => {
     addDialogueToContainer("", line, scriptContainer);
   });
 
