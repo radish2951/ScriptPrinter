@@ -163,7 +163,7 @@ function toggleHighlight(e) {
     noVoiceElement = document.createElement("span");
     noVoiceElement.classList.add("no-voice");
     noVoiceElement.textContent = "【ボイス不要】";
-    dialogue.querySelector(".dialogue").appendChild(noVoiceElement);
+    dialogue.querySelector(".character-name").prepend(noVoiceElement);
   } else if (noVoiceElement) {
       noVoiceElement.remove();
   }
