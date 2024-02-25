@@ -1,14 +1,10 @@
 function toZenKaku(str) {
   // 半角数字を全角数字に変換する
-  return str.replace(/[A-Za-z0-9]/g, function (s) {
-    return String.fromCharCode(s.charCodeAt(0) + 0xfee0);
-  });
+  return str.replace(/[A-Za-z0-9]/g, s => String.fromCharCode(s.charCodeAt(0) + 0xfee0));
 }
 
 function preprocessText(text) {
-  return text.split(/\r\n|\r|\n/g).map(line => {
-    return line.trim();
-  }).join("\n");
+  return text.split(/\r\n|\r|\n/g).map(line => line.trim()).join("\n");
 }
 
 // テキストファイルを読み込んで台本を表示する関数
@@ -19,7 +15,7 @@ function loadScript() {
     const file = input.files[0];
     const reader = new FileReader();
 
-    reader.onload = function (e) {
+    reader.onload = e => {
       const text = e.target.result;
       displayScript(preprocessText(text));
     };
@@ -131,22 +127,22 @@ function displayCharacterCheckboxes(characterList) {
 // Toggle the highlighted class for the dialogues of the selected character
 function toggleCharacterHighlight(event) {
   const character = event.target.value;
-  const isChecked = event.target.checked; // チェック状態を取得
+  const isChecked = event.target.checked;
 
   // 対象のキャラクター名を含む全てのチェックボックスを操作
   document.querySelectorAll('#characterList input[type="checkbox"]').forEach(checkbox => {
     if (checkbox.value.includes(character)) {
-      checkbox.checked = isChecked; // 条件に一致するチェックボックスを更新
+      checkbox.checked = isChecked;
     }
   });
 
   // 元々あったダイアログのハイライト更新処理
-  document.querySelectorAll(".character-dialogue").forEach((charDialogueDiv) => {
+  document.querySelectorAll(".character-dialogue").forEach(charDialogueDiv => {
     const characterSpan = charDialogueDiv.querySelector(".character-name");
     if (characterSpan && characterSpan.textContent.includes(character)) {
       if (isChecked) {
         charDialogueDiv.classList.add("highlighted");
-        charDialogueDiv.addEventListener("click", toggleHighlight); // クリックイベントを追加
+        charDialogueDiv.addEventListener("click", toggleHighlight);
       } else {
         charDialogueDiv.classList.remove("highlighted");
         charDialogueDiv.removeEventListener("click", toggleHighlight);
@@ -156,27 +152,23 @@ function toggleCharacterHighlight(event) {
 }
 
 // ハイライトのクラスを切り替え、"ボイスなし"のテキストを追加/削除する関数
-function toggleHighlight(event) {
-  const dialogue = event.currentTarget; // クリックされたセリフの要素
-  dialogue.classList.toggle("highlighted");
+function toggleHighlight(e) {
+  const dialogue = e.currentTarget;
+  const isHighlighted = dialogue.classList.contains("highlighted");
 
   // "ボイスなし"を示す要素が既に存在するかチェック
   let noVoiceElement = dialogue.querySelector(".no-voice");
 
-  if (!dialogue.classList.contains("highlighted")) {
-    // ハイライトがない場合は、"ボイスなし"を追加
-    if (!noVoiceElement) {
-      noVoiceElement = document.createElement("span");
-      noVoiceElement.classList.add("no-voice");
-      noVoiceElement.textContent = "【ボイス不要】";
-      dialogue.querySelector(".dialogue").appendChild(noVoiceElement);
-    }
-  } else {
-    // ハイライトがある場合は、"ボイスなし"を削除
-    if (noVoiceElement) {
+  if (isHighlighted && !noVoiceElement) {
+    noVoiceElement = document.createElement("span");
+    noVoiceElement.classList.add("no-voice");
+    noVoiceElement.textContent = "【ボイス不要】";
+    dialogue.querySelector(".dialogue").appendChild(noVoiceElement);
+  } else if (noVoiceElement) {
       noVoiceElement.remove();
-    }
   }
+
+  dialogue.classList.toggle("highlighted");
 
   calculateSelectedCharactersDialogues();
 }
@@ -189,7 +181,7 @@ function calculateSelectedCharactersDialogues() {
   });
 
   let dialogueNumber = 0;
-  document.querySelectorAll(".character-dialogue").forEach((dialogueDiv) => {
+  document.querySelectorAll(".character-dialogue").forEach(dialogueDiv => {
     const characterSpan = dialogueDiv.querySelector(".character-name");
     let dialogueIndex = dialogueDiv.querySelector(".dialogue-index");
     
