@@ -210,5 +210,5 @@ function calculateSelectedCharactersDialogues() {
 
   // 結果を表示する要素を更新
   const resultDisplay = document.getElementById("dialogueCountResult");
-  resultDisplay.textContent = "ワード数 " + toZenKaku(String(dialogueNumber));
+  resultDisplay.textContent = dialogueNumber > 0 ? "ワード数 " + toZenKaku(String(dialogueNumber)) : "";
 }
