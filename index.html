@@ -60,16 +60,17 @@
       }
       .dialogue-index {
         position: absolute;
-        right: calc(-1.1 *  var(--font-size));
+        right: calc(-0.95 * var(--font-size));
         color: var(--highlight-color);
         font-family: var(--font-sans);
-        font-size: calc(0.8 * var(--font-size));
+        font-size: calc(0.75 * var(--font-size));
       }
 
       /* サマリのスタイル */
       #scriptSummary {
         margin-left: var(--margin);
-        input, textarea {
+        input,
+        textarea {
           font: inherit;
           background: none;
           padding: 0;
@@ -79,7 +80,8 @@
           resize: none;
         }
 
-        #characterList, #dialogueCountResult {
+        #characterList,
+        #dialogueCountResult {
           font-family: var(--font-sans);
           color: var(--highlight-color);
           user-select: none;
@@ -92,9 +94,9 @@
           border: 1px solid transparent;
 
           &:has(input:checked) {
-          background-color: var(--highlight-color); /* チェックされたキャラクターの背景色 */
-          color: white;
-          font-weight: bold;
+            background-color: var(--highlight-color); /* チェックされたキャラクターの背景色 */
+            color: white;
+            font-weight: bold;
           }
 
           &:hover {
@@ -102,7 +104,7 @@
           }
           input {
             display: none;
-          };
+          }
         }
       }
 
@@ -111,7 +113,7 @@
         @page {
           size: A4 landscape;
           margin: var(--margin);
-         }
+        }
         body {
           margin: 0;
         }
@@ -123,7 +125,7 @@
     <div id="scriptSummary">
       <h1>
         <input type="file" id="fileInput" accept=".txt" onchange="loadScript()" />
-        <textarea id="fileTitle" style="display:none;"></textarea>
+        <textarea id="fileTitle" style="display: none"></textarea>
       </h1>
       <p id="characterList"></p>
       <p id="dialogueCountResult"></p>
