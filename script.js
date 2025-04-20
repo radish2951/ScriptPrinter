@@ -25,13 +25,13 @@ function loadScript() {
     input.style.display = "none";
     title.removeAttribute("style");
     title.style.width = 0;
-    title.style.width = title.scrollWidth + "px";
+    title.style.width = `${title.scrollWidth}px`;
 
     title.addEventListener("input", e => {
       const title = e.target;
       document.title = title.value;
       title.style.width = 0;
-      title.style.width = title.scrollWidth + "px";
+      title.style.width = `${title.scrollWidth}px`;
     });
   }
 }
@@ -51,14 +51,14 @@ function displayScript(text) {
   const pattern = patterns.pattern1;
   let lastIndex = 0; // マッチングの開始位置を追跡
 
-  let match;
-  while ((match = pattern.exec(text)) !== null) {
+  let match = pattern.exec(text);
+  while (match !== null) {
     // マッチする前のテキストを追加
     if (lastIndex < match.index) {
       const textBeforeMatch = text.slice(lastIndex, match.index - 1);
-      textBeforeMatch.split("\n").forEach(line => {
+      for (const line of textBeforeMatch.split("\n")) {
         addDialogueToContainer("", line, scriptContainer);
-      });
+      }
     }
 
     // マッチしたテキストを追加
@@ -68,13 +68,14 @@ function displayScript(text) {
     characterList.add(toZenKaku(characterName));
 
     lastIndex = pattern.lastIndex + 1;
+    match = pattern.exec(text);
   }
 
   // 最後のマッチ後のテキストを追加
   const textAfterLastMatch = text.slice(lastIndex);
-  textAfterLastMatch.split("\n").forEach(line => {
+  for (const line of textAfterLastMatch.split("\n")) {
     addDialogueToContainer("", line, scriptContainer);
-  });
+  }
 
   displayCharacterCheckboxes(characterList);
 }
@@ -108,7 +109,7 @@ function displayCharacterCheckboxes(characterList) {
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.value = character;
-      checkbox.onchange = function(event) {
+      checkbox.onchange = (event) => {
         toggleCharacterHighlight(event);
         calculateSelectedCharactersDialogues();
       };
@@ -130,16 +131,18 @@ function toggleCharacterHighlight(event) {
   const isChecked = event.target.checked;
 
   // 対象のキャラクター名を含む全てのチェックボックスを操作
-  document.querySelectorAll('#characterList input[type="checkbox"]').forEach(checkbox => {
+  const checkboxes = document.querySelectorAll('#characterList input[type="checkbox"]');
+  for (const checkbox of checkboxes) {
     if (checkbox.value.includes(character)) {
       checkbox.checked = isChecked;
     }
-  });
+  }
 
   // 元々あったダイアログのハイライト更新処理
-  document.querySelectorAll(".character-dialogue").forEach(charDialogueDiv => {
+  const charDialogueDivs = document.querySelectorAll(".character-dialogue");
+  for (const charDialogueDiv of charDialogueDivs) {
     const characterSpan = charDialogueDiv.querySelector(".character-name");
-    if (characterSpan && characterSpan.textContent.includes(character)) {
+    if (characterSpan?.textContent.includes(character)) {
       if (isChecked) {
         charDialogueDiv.classList.add("highlighted");
         charDialogueDiv.addEventListener("click", toggleHighlight);
@@ -148,7 +151,7 @@ function toggleCharacterHighlight(event) {
         charDialogueDiv.removeEventListener("click", toggleHighlight);
       }
     }
-  });
+  }
 }
 
 // ハイライトのクラスを切り替え、"ボイスなし"のテキストを追加/削除する関数
@@ -165,7 +168,7 @@ function toggleHighlight(e) {
     noVoiceElement.textContent = "【ボイス不要】";
     dialogue.querySelector(".character-name").prepend(noVoiceElement);
   } else if (noVoiceElement) {
-      noVoiceElement.remove();
+    noVoiceElement.remove();
   }
 
   dialogue.classList.toggle("highlighted");
@@ -176,15 +179,16 @@ function toggleHighlight(e) {
 // 選択されたキャラクターのセリフに番号をつける関数
 function calculateSelectedCharactersDialogues() {
   const selectedCharacters = new Set();
-  document.querySelectorAll('#characterList input[type="checkbox"]:checked').forEach(checkbox => {
+  for (const checkbox of document.querySelectorAll('#characterList input[type="checkbox"]:checked')) {
     selectedCharacters.add(checkbox.value);
-  });
+  }
 
   let dialogueNumber = 0;
-  document.querySelectorAll(".character-dialogue").forEach(dialogueDiv => {
+  const dialogueDivs = document.querySelectorAll(".character-dialogue");
+  for (const dialogueDiv of dialogueDivs) {
     const characterSpan = dialogueDiv.querySelector(".character-name");
     let dialogueIndex = dialogueDiv.querySelector(".dialogue-index");
-    
+
     if (selectedCharacters.has(characterSpan.textContent) && dialogueDiv.classList.contains("highlighted")) {
       dialogueNumber++;
       // 既存の番号があれば更新、なければ新しく追加
@@ -198,9 +202,9 @@ function calculateSelectedCharactersDialogues() {
       // 選択されていないキャラクターのセリフ番号を削除
       if (dialogueIndex) dialogueIndex.remove();
     }
-  });
+  }
 
   // 結果を表示する要素を更新
   const resultDisplay = document.getElementById("dialogueCountResult");
-  resultDisplay.textContent = dialogueNumber > 0 ? "ワード数 " + toZenKaku(String(dialogueNumber)) : "";
+  resultDisplay.textContent = dialogueNumber > 0 ? `ワード数 ${toZenKaku(String(dialogueNumber))}` : "";
 }
