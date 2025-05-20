@@ -1,0 +1,5 @@
+CharacterA「Hello」
+CharacterB「Hi there!」
+CharacterA「How are you?」
+Narrator「The sun is shining.」
+CharacterB「I'm fine, thanks!」
