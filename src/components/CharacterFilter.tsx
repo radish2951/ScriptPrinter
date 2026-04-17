@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from "react";
+import { Fragment } from "react";
 
 type Props = {
   characters: string[];
@@ -7,15 +7,10 @@ type Props = {
 };
 
 export function CharacterFilter({ characters, selected, onToggle }: Props) {
-  const visible = useMemo(
-    () => characters.filter((c) => c.trim() !== ""),
-    [characters],
-  );
-
   return (
     <p id="characterList">
-      {visible.length > 0 && "キャラクターリスト "}
-      {visible.map((character, index) => (
+      {characters.length > 0 && "キャラクターリスト "}
+      {characters.map((character, index) => (
         <Fragment key={character}>
           <label>
             <input
@@ -26,7 +21,7 @@ export function CharacterFilter({ characters, selected, onToggle }: Props) {
             />
             {character}
           </label>
-          {index < visible.length - 1 && "、"}
+          {index < characters.length - 1 && "、"}
         </Fragment>
       ))}
     </p>

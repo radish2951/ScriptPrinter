@@ -15,6 +15,7 @@ export function parseScript(raw: string): {
 
   while ((match = pattern.exec(text)) !== null) {
     if (lastIndex < match.index) {
+      // 直前の改行は地の文に含めない
       const before = text.slice(lastIndex, match.index - 1);
       for (const line of before.split("\n")) {
         dialogues.push({ id: id++, character: "", text: toZenKaku(line) });
@@ -24,6 +25,7 @@ export function parseScript(raw: string): {
     const line = toZenKaku(match[2].trim());
     dialogues.push({ id: id++, character: name, text: line });
     characterSet.add(name);
+    // 直後の改行をスキップして次の地の文の先頭に進める
     lastIndex = pattern.lastIndex + 1;
   }
 

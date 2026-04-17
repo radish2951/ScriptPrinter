@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ScriptSummary } from "./components/ScriptSummary";
 import { ScriptView } from "./components/ScriptView";
+import { toggleCharactersByMatch } from "./lib/characterToggle";
 import { isHighlighted } from "./lib/dialogue";
 import { parseScript } from "./lib/parseScript";
 import { toggleInSet } from "./lib/setOps";
@@ -48,17 +49,7 @@ export function App() {
   };
 
   const toggleCharacter = (target: string) => {
-    setSelected((prev) => {
-      const willCheck = !prev.has(target);
-      const next = new Set(prev);
-      for (const c of characters) {
-        if (c.includes(target)) {
-          if (willCheck) next.add(c);
-          else next.delete(c);
-        }
-      }
-      return next;
-    });
+    setSelected((prev) => toggleCharactersByMatch(characters, prev, target));
   };
 
   const toggleNoVoice = (id: number) => {
