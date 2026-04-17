@@ -6,14 +6,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 pnpm install
-pnpm dev      # 開発サーバ
-pnpm build    # tsc -b && vite build（型チェック込み）
+pnpm dev         # 開発サーバ
+pnpm build       # tsc -b && vite build（型チェック込み）
 pnpm preview
+pnpm test        # Vitest（watch）
+pnpm test:run    # Vitest ワンショット
+pnpm lint        # ESLint
+pnpm typecheck   # tsc -b のみ
 ```
 
 - パッケージマネージャは pnpm 固定。Node は `>=22`
-- テスト・リンタは未導入
-- デプロイは Cloudflare Pages で `main` への push をトリガー（設定は Cloudflare 側、リポジトリに workflow ファイルはない）
+- テストは `src/lib/` の純粋関数のみ対象。UI 側のテストは入れていない
+- CI/CD は `.github/workflows/ci.yml` に一本化。PR で typecheck + lint + test + build、main への push でさらに `cloudflare/wrangler-action` で Cloudflare Pages にデプロイ
+- デプロイには `CLOUDFLARE_API_TOKEN` と `CLOUDFLARE_ACCOUNT_ID` の GitHub Secrets が必要。Cloudflare 側の git 連携は停止する前提
 
 ## 押さえておきたい設計判断
 
