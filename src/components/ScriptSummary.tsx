@@ -11,6 +11,7 @@ type Props = {
   selected: Set<string>;
   onToggleCharacter: (character: string) => void;
   dialogueCount: number;
+  error: string | null;
 };
 
 export function ScriptSummary({
@@ -22,6 +23,7 @@ export function ScriptSummary({
   selected,
   onToggleCharacter,
   dialogueCount,
+  error,
 }: Props) {
   return (
     <div id="scriptSummary">
@@ -39,6 +41,11 @@ export function ScriptSummary({
         )}
         {fileLoaded && <FileTitle title={title} onChange={onTitleChange} />}
       </h1>
+      {error && (
+        <p id="fileError" role="alert">
+          {error}
+        </p>
+      )}
       <CharacterFilter
         characters={characters}
         selected={selected}

@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { ScriptSummary } from "./components/ScriptSummary";
 import { ScriptView } from "./components/ScriptView";
+import { isHighlighted } from "./lib/dialogue";
 import { parseScript } from "./lib/parseScript";
+import { toggleInSet } from "./lib/setOps";
 import type { Dialogue } from "./types";
 
 export function App() {
@@ -11,33 +13,38 @@ export function App() {
   const [characters, setCharacters] = useState<string[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [noVoice, setNoVoice] = useState<Set<number>>(new Set());
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (title) document.title = title;
   }, [title]);
 
   const dialogueCount = useMemo(
-    () =>
-      dialogues.filter(
-        (d) =>
-          d.character !== "" && selected.has(d.character) && !noVoice.has(d.id),
-      ).length,
+    () => dialogues.filter((d) => isHighlighted(d, selected, noVoice)).length,
     [dialogues, selected, noVoice],
   );
 
   const onFile = (file: File) => {
     const reader = new FileReader();
     reader.onload = (e) => {
-      const text = (e.target?.result as string) ?? "";
-      const { dialogues, characters } = parseScript(text);
+      const result = e.target?.result;
+      if (typeof result !== "string") {
+        setError("ファイルの読み込みに失敗いたしました");
+        return;
+      }
+      const { dialogues, characters } = parseScript(result);
+      setTitle(file.name);
       setDialogues(dialogues);
       setCharacters(characters);
       setSelected(new Set());
       setNoVoice(new Set());
+      setFileLoaded(true);
+      setError(null);
+    };
+    reader.onerror = () => {
+      setError("ファイルの読み込みに失敗いたしました");
     };
     reader.readAsText(file, "UTF-8");
-    setTitle(file.name);
-    setFileLoaded(true);
   };
 
   const toggleCharacter = (target: string) => {
@@ -55,12 +62,7 @@ export function App() {
   };
 
   const toggleNoVoice = (id: number) => {
-    setNoVoice((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+    setNoVoice((prev) => toggleInSet(prev, id));
   };
 
   return (
@@ -74,6 +76,7 @@ export function App() {
         selected={selected}
         onToggleCharacter={toggleCharacter}
         dialogueCount={dialogueCount}
+        error={error}
       />
       <ScriptView
         dialogues={dialogues}

@@ -3,39 +3,58 @@
   --font-size-large: 15pt;
   --font-serif: "ヒラギノ明朝 Pro", "Hiragino Mincho Pro", serif;
   --font-sans: "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", sans-serif;
-  --height: 210mm;
-  --padding-bottom: 40mm;
-  --margin: 10mm;
+  --page-height: 210mm;
+  --page-padding-bottom: 40mm;
+  --page-margin: 10mm;
   --highlight-color: #666666;
+  --char-name-height: 40mm;
+  --char-name-padding: 2mm;
+  --dialogue-offset: 50mm;
+  --dialogue-gap: 3mm;
+  --filter-label-padding: 2px;
+  --filter-label-margin: 2px;
 }
 body {
   writing-mode: vertical-rl;
   font-family: var(--font-serif);
-  margin: var(--margin);
+  margin: var(--page-margin);
   padding: 0;
-  height: var(--height);
+  height: var(--page-height);
 }
 .page {
   box-sizing: border-box;
-  padding-bottom: var(--padding-bottom);
+  padding-bottom: var(--page-padding-bottom);
   font-size: var(--font-size);
 }
 .character-dialogue {
   display: inline-block; /* キャラクター名とセリフを縦に表示 */
-  margin-block: 3mm; /* キャラクター名とセリフのブロック間の余白 */
+  margin-block: var(--dialogue-gap); /* キャラクター名とセリフのブロック間の余白 */
   height: 100%;
   position: relative;
+}
+button.character-dialogue {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  writing-mode: inherit;
+  cursor: pointer;
+}
+button.character-dialogue:disabled {
+  cursor: default;
 }
 .character-name {
   font-weight: bold;
   font-family: var(--font-sans);
   position: absolute;
-  height: 40mm;
+  height: var(--char-name-height);
   text-align: end;
-  padding-bottom: 2mm;
+  padding-bottom: var(--char-name-padding);
 }
 .dialogue {
-  margin-top: 50mm; /* キャラクター名とセリフの間の余白 */
+  margin-top: var(--dialogue-offset); /* キャラクター名とセリフの間の余白 */
   display: block;
 }
 .highlighted {
@@ -62,7 +81,7 @@ body {
 
 /* サマリのスタイル */
 #scriptSummary {
-  margin-left: var(--margin);
+  margin-left: var(--page-margin);
   input,
   textarea {
     font: inherit;
@@ -80,9 +99,13 @@ body {
     color: var(--highlight-color);
     user-select: none;
   }
+  #fileError {
+    font-family: var(--font-sans);
+    color: #b00020;
+  }
   label {
-    padding: 2px;
-    margin: 2px;
+    padding: var(--filter-label-padding);
+    margin: var(--filter-label-margin);
     display: inline-block;
     cursor: pointer;
     border: 1px solid transparent;
@@ -93,11 +116,18 @@ body {
       font-weight: bold;
     }
 
-    &:hover {
+    &:hover,
+    &:has(input:focus-visible) {
       border: 1px solid var(--highlight-color);
     }
     input {
-      display: none;
+      /* 視覚的には隠しつつフォーカス可能にするテクニック */
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
   }
 }
@@ -106,7 +136,7 @@ body {
 @media print {
   @page {
     size: A4 landscape;
-    margin: var(--margin);
+    margin: var(--page-margin);
   }
   body {
     margin: 0;

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from "react";
+import { useAutoSizeTextarea } from "../hooks/useAutoSizeTextarea";
 
 type Props = {
   title: string;
@@ -6,14 +6,7 @@ type Props = {
 };
 
 export function FileTitle({ title, onChange }: Props) {
-  const ref = useRef<HTMLTextAreaElement>(null);
-
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    el.style.width = "0";
-    el.style.width = el.scrollWidth + "px";
-  }, [title]);
+  const ref = useAutoSizeTextarea(title);
 
   return (
     <textarea
