@@ -82,6 +82,10 @@ button.character-dialogue:disabled {
 /* サマリのスタイル */
 #scriptSummary {
   margin-left: var(--page-margin);
+  position: sticky;
+  inset-block-start: 0;
+  background-color: white;
+  z-index: 10;
   input,
   textarea {
     font: inherit;
@@ -140,5 +144,8 @@ button.character-dialogue:disabled {
   }
   body {
     margin: 0;
+  }
+  #scriptSummary {
+    position: static;
   }
 }
