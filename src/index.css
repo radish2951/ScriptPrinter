@@ -83,10 +83,23 @@ button.character-dialogue:disabled {
 /* サマリのスタイル */
 #scriptSummary {
   margin-left: var(--page-margin);
+  margin-block-start: calc(-1 * var(--page-margin));
+  padding-block-start: var(--page-margin);
   position: sticky;
   inset-block-start: 0;
-  background-color: white;
+  background: white;
   z-index: 10;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(-1 * var(--page-margin));
+    width: var(--page-margin);
+    background: linear-gradient(to right, transparent, white);
+    pointer-events: none;
+  }
   input,
   textarea {
     font: inherit;
@@ -103,6 +116,9 @@ button.character-dialogue:disabled {
     font-family: var(--font-sans);
     color: var(--highlight-color);
     user-select: none;
+  }
+  #characterList {
+    line-height: 1.2;
   }
   #fileError {
     font-family: var(--font-sans);
@@ -146,7 +162,8 @@ button.character-dialogue:disabled {
   }
   label {
     padding: var(--filter-label-padding);
-    margin: var(--filter-label-margin);
+    margin-block: var(--filter-label-margin);
+    margin-inline: 0;
     display: inline-block;
     cursor: pointer;
     border: 1px solid transparent;
