@@ -20,6 +20,17 @@ export function App() {
     if (title) document.title = title;
   }, [title]);
 
+  useEffect(() => {
+    const onWheel = (e: WheelEvent) => {
+      if (e.deltaY === 0) return;
+      if (e.ctrlKey || e.metaKey) return;
+      window.scrollBy({ left: -e.deltaY, behavior: "auto" });
+      e.preventDefault();
+    };
+    window.addEventListener("wheel", onWheel, { passive: false });
+    return () => window.removeEventListener("wheel", onWheel);
+  }, []);
+
   const dialogueCount = useMemo(
     () => dialogues.filter((d) => isHighlighted(d, selected, noVoice)).length,
     [dialogues, selected, noVoice],
