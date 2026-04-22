@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { FloatingActions } from "./components/FloatingActions";
 import { ScriptSummary } from "./components/ScriptSummary";
 import { ScriptView } from "./components/ScriptView";
 import { toggleCharactersByMatch } from "./lib/characterToggle";
@@ -91,6 +92,7 @@ export function App() {
         noVoice={noVoice}
         onToggleNoVoice={toggleNoVoice}
       />
+      <FloatingActions />
     </>
   );
 }

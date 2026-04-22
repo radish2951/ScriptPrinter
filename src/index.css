@@ -173,6 +173,34 @@ button.character-dialogue:disabled {
   }
 }
 
+/* 右下のフローティングボタン */
+#floatingActions {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 100;
+  writing-mode: horizontal-tb;
+}
+#floatingActions button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--highlight-color);
+  background: white;
+  color: var(--highlight-color);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+#floatingActions button:hover {
+  background: var(--highlight-color);
+  color: white;
+}
+
 /* 印刷時のスタイル */
 @media print {
   @page {
@@ -186,6 +214,9 @@ button.character-dialogue:disabled {
     position: static;
   }
   #scriptWarnings {
+    display: none;
+  }
+  #floatingActions {
     display: none;
   }
 }
