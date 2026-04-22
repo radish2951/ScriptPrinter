@@ -3,7 +3,7 @@ import { ScriptSummary } from "./components/ScriptSummary";
 import { ScriptView } from "./components/ScriptView";
 import { toggleCharactersByMatch } from "./lib/characterToggle";
 import { isHighlighted } from "./lib/dialogue";
-import { parseScript } from "./lib/parseScript";
+import { parseScript, type ParseWarning } from "./lib/parseScript";
 import { toggleInSet } from "./lib/setOps";
 import type { Dialogue } from "./types";
 
@@ -14,6 +14,7 @@ export function App() {
   const [characters, setCharacters] = useState<string[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [noVoice, setNoVoice] = useState<Set<number>>(new Set());
+  const [warnings, setWarnings] = useState<ParseWarning[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -24,6 +25,8 @@ export function App() {
     const onWheel = (e: WheelEvent) => {
       if (e.deltaY === 0) return;
       if (e.ctrlKey || e.metaKey) return;
+      const target = e.target as Element | null;
+      if (target?.closest("[data-native-scroll]")) return;
       window.scrollBy({ left: -e.deltaY, behavior: "auto" });
       e.preventDefault();
     };
@@ -44,12 +47,13 @@ export function App() {
         setError("ファイルの読み込みに失敗いたしました");
         return;
       }
-      const { dialogues, characters } = parseScript(result);
+      const { dialogues, characters, warnings } = parseScript(result);
       setTitle(file.name);
       setDialogues(dialogues);
       setCharacters(characters);
       setSelected(new Set());
       setNoVoice(new Set());
+      setWarnings(warnings);
       setFileLoaded(true);
       setError(null);
     };
@@ -78,6 +82,7 @@ export function App() {
         selected={selected}
         onToggleCharacter={toggleCharacter}
         dialogueCount={dialogueCount}
+        warnings={warnings}
         error={error}
       />
       <ScriptView

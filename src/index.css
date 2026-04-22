@@ -7,6 +7,7 @@
   --page-padding-bottom: 40mm;
   --page-margin: 10mm;
   --highlight-color: #666666;
+  --warning-color: #b26a00;
   --char-name-height: 40mm;
   --char-name-padding: 2mm;
   --dialogue-offset: 50mm;
@@ -107,6 +108,42 @@ button.character-dialogue:disabled {
     font-family: var(--font-sans);
     color: #b00020;
   }
+  #scriptWarnings {
+    writing-mode: horizontal-tb;
+    font-family: var(--font-sans);
+    font-size: 10pt;
+    color: var(--warning-color);
+    margin-top: 8px;
+    max-width: 280px;
+
+    summary {
+      cursor: pointer;
+      font-weight: bold;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 4px 0 0;
+      max-height: 60vh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+    .warning-line {
+      font-weight: bold;
+    }
+    .warning-raw {
+      display: block;
+      background: #f5f0e8;
+      padding: 2px 6px;
+      margin-top: 2px;
+      font-family: monospace;
+      word-break: break-all;
+      color: #333;
+    }
+  }
   label {
     padding: var(--filter-label-padding);
     margin: var(--filter-label-margin);
@@ -147,5 +184,8 @@ button.character-dialogue:disabled {
   }
   #scriptSummary {
     position: static;
+  }
+  #scriptWarnings {
+    display: none;
   }
 }

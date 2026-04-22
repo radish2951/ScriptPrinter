@@ -1,6 +1,8 @@
+import type { ParseWarning } from "../lib/parseScript";
 import { CharacterFilter } from "./CharacterFilter";
 import { DialogueCount } from "./DialogueCount";
 import { FileTitle } from "./FileTitle";
+import { ScriptWarnings } from "./ScriptWarnings";
 
 type Props = {
   title: string;
@@ -11,6 +13,7 @@ type Props = {
   selected: Set<string>;
   onToggleCharacter: (character: string) => void;
   dialogueCount: number;
+  warnings: ParseWarning[];
   error: string | null;
 };
 
@@ -23,6 +26,7 @@ export function ScriptSummary({
   selected,
   onToggleCharacter,
   dialogueCount,
+  warnings,
   error,
 }: Props) {
   return (
@@ -52,6 +56,7 @@ export function ScriptSummary({
         onToggle={onToggleCharacter}
       />
       <DialogueCount count={dialogueCount} />
+      <ScriptWarnings warnings={warnings} />
     </div>
   );
 }
