@@ -84,7 +84,6 @@ button.character-dialogue:disabled {
 
 /* サマリのスタイル */
 #scriptSummary {
-  margin-left: var(--page-margin);
   margin-block-start: calc(-1 * var(--page-margin));
   padding-block-start: var(--page-margin);
   position: sticky;
@@ -92,16 +91,6 @@ button.character-dialogue:disabled {
   background: white;
   z-index: 10;
 
-  &::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: calc(-1 * var(--page-margin));
-    width: var(--page-margin);
-    background: linear-gradient(to right, transparent, white);
-    pointer-events: none;
-  }
   input,
   textarea {
     font: inherit;
@@ -291,6 +280,39 @@ button.character-dialogue:disabled {
   color: white;
 }
 
+/* 台本下部中央のセリフ送りナビ */
+#scriptNav {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 100;
+  writing-mode: horizontal-tb;
+}
+#scriptNav button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--highlight-color);
+  background: white;
+  color: var(--highlight-color);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+#scriptNav button:hover:not(:disabled) {
+  background: var(--highlight-color);
+  color: white;
+}
+#scriptNav button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 /* 印刷時のスタイル */
 @media print {
   @page {
@@ -310,6 +332,9 @@ button.character-dialogue:disabled {
     display: none;
   }
   #floatingActions {
+    display: none;
+  }
+  #scriptNav {
     display: none;
   }
 }

@@ -36,6 +36,7 @@ export function ScriptView({
           <button
             key={d.id}
             type="button"
+            data-dialogue-id={d.id}
             className={
               "character-dialogue" + (highlighted ? " highlighted" : "")
             }
