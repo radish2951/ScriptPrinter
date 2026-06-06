@@ -25,3 +25,4 @@ pnpm typecheck   # tsc -b のみ
 - ハイライト条件（キャラ選択 ∧ ボイス不要でない）は `src/lib/dialogue.ts` の `isHighlighted` に集約。件数集計・表示判定・連番付与がすべてこれを共有する
 - `Dialogue.character === ""` が地の文を表す（null ではなく空文字）
 - `toggleCharacter` は選んだ名前を部分文字列として含む全キャラを一括トグルする（例 「田中」で「田中A」「田中B」も切り替わる）
+- `Dialogue.text` は `toZenKaku` で全角化済みの表示用、`Dialogue.rawText` は元の「」の中身そのまま（変換なし）。txt 書き出し（`src/lib/exportDialogue.ts`）は `rawText` を使う
