@@ -84,7 +84,6 @@ button.character-dialogue:disabled {
 
 /* サマリのスタイル */
 #scriptSummary {
-  margin-left: var(--page-margin);
   margin-block-start: calc(-1 * var(--page-margin));
   padding-block-start: var(--page-margin);
   position: sticky;
@@ -92,16 +91,6 @@ button.character-dialogue:disabled {
   background: white;
   z-index: 10;
 
-  &::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: calc(-1 * var(--page-margin));
-    width: var(--page-margin);
-    background: white;
-    pointer-events: none;
-  }
   input,
   textarea {
     font: inherit;
