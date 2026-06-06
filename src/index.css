@@ -99,7 +99,7 @@ button.character-dialogue:disabled {
     bottom: 0;
     left: calc(-1 * var(--page-margin));
     width: var(--page-margin);
-    background: linear-gradient(to right, transparent, white);
+    background: white;
     pointer-events: none;
   }
   input,

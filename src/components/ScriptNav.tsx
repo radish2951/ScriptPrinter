@@ -1,8 +1,20 @@
+import { useEffect, useState } from "react";
 import { findAdjacentDialogue } from "../lib/scriptNav";
 
 type Props = {
   hasHighlight: boolean;
 };
+
+// 読める領域の右端 x を返す。サマリ（キャラリスト等）は右側に sticky で
+// 白マスクごと居座るため、その白マスク左端（＝サマリの margin-box 左端）までを
+// 読める領域とみなす。サマリが無ければビューポート幅。
+function readAreaRightEdge(): number {
+  const summary = document.getElementById("scriptSummary");
+  if (!summary) return window.innerWidth;
+  const rect = summary.getBoundingClientRect();
+  const marginLeft = parseFloat(getComputedStyle(summary).marginLeft) || 0;
+  return rect.left - marginLeft;
+}
 
 // 指定の scrollX まで素早く（250ms）スクロールする。
 // 縦書き（vertical-rl）では scrollX は負。ネイティブの smooth より速い。
@@ -23,24 +35,36 @@ function animateScrollX(targetLeft: number) {
 }
 
 export function ScriptNav({ hasHighlight }: Props) {
+  // ナビバー自体も読める領域の左右中央へ置く
+  const [areaCenter, setAreaCenter] = useState<number | null>(null);
+  useEffect(() => {
+    const update = () => setAreaCenter(readAreaRightEdge() / 2);
+    update();
+    window.addEventListener("resize", update);
+    const summary = document.getElementById("scriptSummary");
+    let ro: ResizeObserver | null = null;
+    if (summary && typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(update);
+      ro.observe(summary);
+    }
+    return () => {
+      window.removeEventListener("resize", update);
+      ro?.disconnect();
+    };
+  }, []);
+
   const scrollToStart = () => animateScrollX(0);
   const scrollToEnd = () =>
     animateScrollX(-document.documentElement.scrollWidth);
 
-  // ハイライト中セリフのうち、画面中央から見た隣のセリフを左右中央へ寄せる
+  // ハイライト中セリフのうち、読める領域の中央から見た隣のセリフを中央へ寄せる
   const scrollToAdjacent = (direction: "next" | "prev") => {
     const els = Array.from(
       document.querySelectorAll<HTMLElement>(
         "#scriptContainer .character-dialogue.highlighted",
       ),
     );
-    // サマリ（キャラリスト等）は右側に sticky で居座るため、その左端までを
-    // 読める領域とみなし、その左右中央を基準にする
-    const summary = document.getElementById("scriptSummary");
-    const rightEdge = summary
-      ? summary.getBoundingClientRect().left
-      : window.innerWidth;
-    const center = rightEdge / 2;
+    const center = readAreaRightEdge() / 2;
     const positions = els.map((el) => {
       const r = el.getBoundingClientRect();
       return { id: Number(el.dataset.dialogueId), center: r.left + r.width / 2 };
@@ -50,12 +74,15 @@ export function ScriptNav({ hasHighlight }: Props) {
     const target = els.find((el) => Number(el.dataset.dialogueId) === targetId);
     if (!target) return;
     const r = target.getBoundingClientRect();
-    // 対象の中心を画面の左右中央へ。目標 scrollX を直接指定して正確に合わせる
+    // 対象の中心を読める領域の左右中央へ。目標 scrollX を直接指定して正確に合わせる
     animateScrollX(window.scrollX + (r.left + r.width / 2 - center));
   };
 
   return (
-    <div id="scriptNav">
+    <div
+      id="scriptNav"
+      style={{ left: areaCenter != null ? `${areaCenter}px` : undefined }}
+    >
       <button type="button" onClick={scrollToEnd} title="最後へ" aria-label="最後へ">
         «
       </button>
