@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   combineContents,
   deriveTitle,
-  moveFile,
+  reorderFiles,
   removeFile,
 } from "./loadedFiles";
 import type { LoadedFile } from "../types";
@@ -35,27 +35,28 @@ describe("deriveTitle", () => {
   });
 });
 
-describe("moveFile", () => {
+describe("reorderFiles", () => {
   const files = [f(0, "a", ""), f(1, "b", ""), f(2, "c", "")];
 
-  it("上に移動する", () => {
-    expect(moveFile(files, 1, -1).map((x) => x.id)).toEqual([1, 0, 2]);
+  it("先頭を中間（c の直前）へ移動する", () => {
+    expect(reorderFiles(files, 0, 2).map((x) => x.id)).toEqual([1, 0, 2]);
   });
 
-  it("下に移動する", () => {
-    expect(moveFile(files, 1, 1).map((x) => x.id)).toEqual([0, 2, 1]);
+  it("末尾を先頭へ移動する", () => {
+    expect(reorderFiles(files, 2, 0).map((x) => x.id)).toEqual([2, 0, 1]);
   });
 
-  it("先頭をさらに上へは動かさない", () => {
-    expect(moveFile(files, 0, -1)).toBe(files);
+  it("先頭を末尾（length）へ移動する", () => {
+    expect(reorderFiles(files, 0, 3).map((x) => x.id)).toEqual([1, 2, 0]);
   });
 
-  it("末尾をさらに下へは動かさない", () => {
-    expect(moveFile(files, 2, 1)).toBe(files);
+  it("自分の直前・直後へのドロップは無変更", () => {
+    expect(reorderFiles(files, 1, 1).map((x) => x.id)).toEqual([0, 1, 2]);
+    expect(reorderFiles(files, 1, 2).map((x) => x.id)).toEqual([0, 1, 2]);
   });
 
-  it("存在しない id は無変更", () => {
-    expect(moveFile(files, 99, -1)).toBe(files);
+  it("存在しない id は同一参照を返す", () => {
+    expect(reorderFiles(files, 99, 0)).toBe(files);
   });
 });
 

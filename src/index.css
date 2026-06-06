@@ -179,7 +179,23 @@ button.character-dialogue:disabled {
       display: flex;
       align-items: center;
       gap: 6px;
-      padding: 2px 0;
+      padding: 3px 0;
+      cursor: grab;
+    }
+    li.dragging {
+      opacity: 0.4;
+    }
+    li.drop-before {
+      box-shadow: 0 -2px 0 0 var(--highlight-color);
+    }
+    li.drop-after {
+      box-shadow: 0 2px 0 0 var(--highlight-color);
+    }
+    .file-handle {
+      flex-shrink: 0;
+      color: var(--highlight-color);
+      opacity: 0.6;
+      line-height: 1;
     }
     .file-name {
       flex: 1;
@@ -187,12 +203,8 @@ button.character-dialogue:disabled {
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .file-actions {
-      display: flex;
-      gap: 2px;
+    li button {
       flex-shrink: 0;
-    }
-    .file-actions button {
       width: 22px;
       height: 22px;
       padding: 0;
@@ -204,11 +216,7 @@ button.character-dialogue:disabled {
       line-height: 1;
       cursor: pointer;
     }
-    .file-actions button:disabled {
-      opacity: 0.3;
-      cursor: default;
-    }
-    .file-actions button:not(:disabled):hover {
+    li button:hover {
       background: var(--highlight-color);
       color: white;
     }

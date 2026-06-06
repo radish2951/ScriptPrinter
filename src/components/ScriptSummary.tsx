@@ -13,7 +13,7 @@ type Props = {
   onLoadFiles: (files: FileList) => void;
   onAddFiles: (files: FileList) => void;
   onRemoveFile: (id: number) => void;
-  onMoveFile: (id: number, dir: -1 | 1) => void;
+  onReorderFile: (id: number, insertBefore: number) => void;
   characters: string[];
   selected: Set<string>;
   onToggleCharacter: (character: string) => void;
@@ -29,7 +29,7 @@ export function ScriptSummary({
   onLoadFiles,
   onAddFiles,
   onRemoveFile,
-  onMoveFile,
+  onReorderFile,
   characters,
   selected,
   onToggleCharacter,
@@ -65,7 +65,7 @@ export function ScriptSummary({
           files={files}
           onAddFiles={onAddFiles}
           onRemove={onRemoveFile}
-          onMove={onMoveFile}
+          onReorder={onReorderFile}
         />
       )}
       <CharacterFilter

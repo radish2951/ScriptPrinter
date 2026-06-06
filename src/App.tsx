@@ -8,8 +8,8 @@ import { buildDialogueText, exportFileName } from "./lib/exportDialogue";
 import {
   combineContents,
   deriveTitle,
-  moveFile,
   removeFile,
+  reorderFiles,
 } from "./lib/loadedFiles";
 import { parseScript } from "./lib/parseScript";
 import { toggleInSet } from "./lib/setOps";
@@ -101,8 +101,8 @@ export function App() {
   };
 
   // 並び替え・削除は id がずれるためボイス不要をリセットする
-  const handleMove = (id: number, dir: -1 | 1) => {
-    setFiles((prev) => moveFile(prev, id, dir));
+  const handleReorder = (id: number, insertBefore: number) => {
+    setFiles((prev) => reorderFiles(prev, id, insertBefore));
     setNoVoice(new Set());
   };
 
@@ -139,7 +139,7 @@ export function App() {
         onLoadFiles={loadFiles}
         onAddFiles={addFiles}
         onRemoveFile={handleRemove}
-        onMoveFile={handleMove}
+        onReorderFile={handleReorder}
         characters={characters}
         selected={selected}
         onToggleCharacter={toggleCharacter}
