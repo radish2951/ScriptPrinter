@@ -162,6 +162,69 @@ button.character-dialogue:disabled {
       color: #333;
     }
   }
+  #fileList {
+    writing-mode: horizontal-tb;
+    font-family: var(--font-sans);
+    font-size: 10pt;
+    color: var(--highlight-color);
+    margin-top: 8px;
+    max-width: 280px;
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 0;
+    }
+    .file-name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .file-actions {
+      display: flex;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+    .file-actions button {
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      border: 1px solid var(--highlight-color);
+      border-radius: 4px;
+      background: white;
+      color: var(--highlight-color);
+      font-size: 10px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .file-actions button:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+    .file-actions button:not(:disabled):hover {
+      background: var(--highlight-color);
+      color: white;
+    }
+    .file-add {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 2px 8px;
+      border: 1px dashed var(--highlight-color);
+      border-radius: 4px;
+      color: var(--highlight-color);
+      cursor: pointer;
+    }
+    .file-add input {
+      display: none;
+    }
+  }
   label {
     padding: var(--filter-label-padding);
     margin-block: var(--filter-label-margin);
@@ -233,6 +296,9 @@ button.character-dialogue:disabled {
     position: static;
   }
   #scriptWarnings {
+    display: none;
+  }
+  #fileList {
     display: none;
   }
   #floatingActions {

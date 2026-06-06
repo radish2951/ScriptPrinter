@@ -1,23 +1,48 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FloatingActions } from "./components/FloatingActions";
 import { ScriptSummary } from "./components/ScriptSummary";
 import { ScriptView } from "./components/ScriptView";
 import { toggleCharactersByMatch } from "./lib/characterToggle";
 import { isHighlighted } from "./lib/dialogue";
 import { buildDialogueText, exportFileName } from "./lib/exportDialogue";
-import { parseScript, type ParseWarning } from "./lib/parseScript";
+import {
+  combineContents,
+  deriveTitle,
+  moveFile,
+  removeFile,
+} from "./lib/loadedFiles";
+import { parseScript } from "./lib/parseScript";
 import { toggleInSet } from "./lib/setOps";
-import type { Dialogue } from "./types";
+import type { LoadedFile } from "./types";
+
+function readFileAsText(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result;
+      if (typeof result === "string") resolve(result);
+      else reject(new Error("read failed"));
+    };
+    reader.onerror = () => reject(reader.error ?? new Error("read failed"));
+    reader.readAsText(file, "UTF-8");
+  });
+}
 
 export function App() {
   const [title, setTitle] = useState("");
-  const [fileLoaded, setFileLoaded] = useState(false);
-  const [dialogues, setDialogues] = useState<Dialogue[]>([]);
-  const [characters, setCharacters] = useState<string[]>([]);
+  const [files, setFiles] = useState<LoadedFile[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [noVoice, setNoVoice] = useState<Set<number>>(new Set());
-  const [warnings, setWarnings] = useState<ParseWarning[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const nextId = useRef(0);
+
+  const { dialogues, characters, warnings } = useMemo(
+    () =>
+      files.length
+        ? parseScript(combineContents(files))
+        : { dialogues: [], characters: [], warnings: [] },
+    [files],
+  );
 
   useEffect(() => {
     if (title) document.title = title;
@@ -41,28 +66,49 @@ export function App() {
     [dialogues, selected, noVoice],
   );
 
-  const onFile = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const result = e.target?.result;
-      if (typeof result !== "string") {
-        setError("ファイルの読み込みに失敗いたしました");
-        return;
-      }
-      const { dialogues, characters, warnings } = parseScript(result);
-      setTitle(file.name);
-      setDialogues(dialogues);
-      setCharacters(characters);
+  const readFiles = async (fileList: FileList): Promise<LoadedFile[]> =>
+    Promise.all(
+      Array.from(fileList).map(async (file) => ({
+        id: nextId.current++,
+        name: file.name,
+        content: await readFileAsText(file),
+      })),
+    );
+
+  // 最初の読み込み（全置き換え）。選択・ボイス不要はリセットする
+  const loadFiles = async (fileList: FileList) => {
+    try {
+      const loaded = await readFiles(fileList);
+      setFiles(loaded);
+      setTitle(deriveTitle(loaded));
       setSelected(new Set());
       setNoVoice(new Set());
-      setWarnings(warnings);
-      setFileLoaded(true);
       setError(null);
-    };
-    reader.onerror = () => {
+    } catch {
       setError("ファイルの読み込みに失敗いたしました");
-    };
-    reader.readAsText(file, "UTF-8");
+    }
+  };
+
+  // 追加読み込み（末尾に連結）。既存セリフの id は不変なのでボイス不要は維持
+  const addFiles = async (fileList: FileList) => {
+    try {
+      const loaded = await readFiles(fileList);
+      setFiles((prev) => [...prev, ...loaded]);
+      setError(null);
+    } catch {
+      setError("ファイルの読み込みに失敗いたしました");
+    }
+  };
+
+  // 並び替え・削除は id がずれるためボイス不要をリセットする
+  const handleMove = (id: number, dir: -1 | 1) => {
+    setFiles((prev) => moveFile(prev, id, dir));
+    setNoVoice(new Set());
+  };
+
+  const handleRemove = (id: number) => {
+    setFiles((prev) => removeFile(prev, id));
+    setNoVoice(new Set());
   };
 
   const toggleCharacter = (target: string) => {
@@ -88,9 +134,12 @@ export function App() {
     <>
       <ScriptSummary
         title={title}
-        fileLoaded={fileLoaded}
+        files={files}
         onTitleChange={setTitle}
-        onFile={onFile}
+        onLoadFiles={loadFiles}
+        onAddFiles={addFiles}
+        onRemoveFile={handleRemove}
+        onMoveFile={handleMove}
         characters={characters}
         selected={selected}
         onToggleCharacter={toggleCharacter}

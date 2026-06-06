@@ -1,14 +1,19 @@
 import type { ParseWarning } from "../lib/parseScript";
+import type { LoadedFile } from "../types";
 import { CharacterFilter } from "./CharacterFilter";
 import { DialogueCount } from "./DialogueCount";
+import { FileList } from "./FileList";
 import { FileTitle } from "./FileTitle";
 import { ScriptWarnings } from "./ScriptWarnings";
 
 type Props = {
   title: string;
-  fileLoaded: boolean;
+  files: LoadedFile[];
   onTitleChange: (value: string) => void;
-  onFile: (file: File) => void;
+  onLoadFiles: (files: FileList) => void;
+  onAddFiles: (files: FileList) => void;
+  onRemoveFile: (id: number) => void;
+  onMoveFile: (id: number, dir: -1 | 1) => void;
   characters: string[];
   selected: Set<string>;
   onToggleCharacter: (character: string) => void;
@@ -19,9 +24,12 @@ type Props = {
 
 export function ScriptSummary({
   title,
-  fileLoaded,
+  files,
   onTitleChange,
-  onFile,
+  onLoadFiles,
+  onAddFiles,
+  onRemoveFile,
+  onMoveFile,
   characters,
   selected,
   onToggleCharacter,
@@ -29,6 +37,8 @@ export function ScriptSummary({
   warnings,
   error,
 }: Props) {
+  const fileLoaded = files.length > 0;
+
   return (
     <div id="scriptSummary">
       <h1>
@@ -37,9 +47,9 @@ export function ScriptSummary({
             type="file"
             id="fileInput"
             accept=".txt"
+            multiple
             onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) onFile(file);
+              if (e.target.files?.length) onLoadFiles(e.target.files);
             }}
           />
         )}
@@ -49,6 +59,14 @@ export function ScriptSummary({
         <p id="fileError" role="alert">
           {error}
         </p>
+      )}
+      {fileLoaded && (
+        <FileList
+          files={files}
+          onAddFiles={onAddFiles}
+          onRemove={onRemoveFile}
+          onMove={onMoveFile}
+        />
       )}
       <CharacterFilter
         characters={characters}
