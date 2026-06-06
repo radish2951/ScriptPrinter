@@ -34,7 +34,13 @@ export function ScriptNav({ hasHighlight }: Props) {
         "#scriptContainer .character-dialogue.highlighted",
       ),
     );
-    const center = window.innerWidth / 2;
+    // サマリ（キャラリスト等）は右側に sticky で居座るため、その左端までを
+    // 読める領域とみなし、その左右中央を基準にする
+    const summary = document.getElementById("scriptSummary");
+    const rightEdge = summary
+      ? summary.getBoundingClientRect().left
+      : window.innerWidth;
+    const center = rightEdge / 2;
     const positions = els.map((el) => {
       const r = el.getBoundingClientRect();
       return { id: Number(el.dataset.dialogueId), center: r.left + r.width / 2 };
