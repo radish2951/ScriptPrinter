@@ -155,7 +155,11 @@ export function App() {
         onToggleNoVoice={toggleNoVoice}
       />
       {dialogues.length > 0 && (
-        <ScriptNav hasHighlight={dialogueCount > 0} />
+        <ScriptNav
+          dialogues={dialogues}
+          selected={selected}
+          noVoice={noVoice}
+        />
       )}
       <FloatingActions onExportText={exportText} />
     </>
