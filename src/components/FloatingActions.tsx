@@ -1,4 +1,8 @@
-export function FloatingActions() {
+type Props = {
+  onExportText: () => void;
+};
+
+export function FloatingActions({ onExportText }: Props) {
   const scrollToStart = () =>
     window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
   const scrollToEnd = () =>
@@ -26,6 +30,14 @@ export function FloatingActions() {
         aria-label="末尾に進む"
       >
         ←
+      </button>
+      <button
+        type="button"
+        onClick={onExportText}
+        title="選択キャラのセリフを txt で書き出す"
+        aria-label="セリフを txt で書き出す"
+      >
+        txt
       </button>
       <button
         type="button"

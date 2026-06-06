@@ -31,11 +31,12 @@ export function parseScript(raw: string): {
 
     if (match) {
       const name = toZenKaku(match[1].trim());
-      const speech = toZenKaku(match[2].trim());
-      dialogues.push({ id: id++, character: name, text: speech });
+      const rawSpeech = match[2];
+      const speech = toZenKaku(rawSpeech.trim());
+      dialogues.push({ id: id++, character: name, text: speech, rawText: rawSpeech });
       characterSet.add(name);
     } else {
-      dialogues.push({ id: id++, character: "", text: toZenKaku(line) });
+      dialogues.push({ id: id++, character: "", text: toZenKaku(line), rawText: line });
       collectNarrativeWarnings(line, lineNumber, warnings);
     }
   }

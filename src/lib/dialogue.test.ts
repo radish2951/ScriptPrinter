@@ -6,6 +6,7 @@ const make = (over: Partial<Dialogue>): Dialogue => ({
   id: 0,
   character: "田中",
   text: "セリフ",
+  rawText: "セリフ",
   ...over,
 });
 

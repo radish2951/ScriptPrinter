@@ -4,14 +4,29 @@ import { parseScript } from "./parseScript";
 describe("parseScript", () => {
   it("基本形「キャラ「セリフ」」を抽出する", () => {
     const { dialogues, characters } = parseScript("田中「おはよう」");
-    expect(dialogues[0]).toEqual({ id: 0, character: "田中", text: "おはよう" });
+    expect(dialogues[0]).toEqual({
+      id: 0,
+      character: "田中",
+      text: "おはよう",
+      rawText: "おはよう",
+    });
     expect(characters).toEqual(["田中"]);
   });
 
   it("地の文とセリフを混在させて連番 id を振る", () => {
     const { dialogues } = parseScript("朝だった。\n田中「おはよう」");
-    expect(dialogues[0]).toEqual({ id: 0, character: "", text: "朝だった。" });
-    expect(dialogues[1]).toEqual({ id: 1, character: "田中", text: "おはよう" });
+    expect(dialogues[0]).toEqual({
+      id: 0,
+      character: "",
+      text: "朝だった。",
+      rawText: "朝だった。",
+    });
+    expect(dialogues[1]).toEqual({
+      id: 1,
+      character: "田中",
+      text: "おはよう",
+      rawText: "おはよう",
+    });
   });
 
   it("同一キャラの登場を重複排除する", () => {
@@ -25,11 +40,31 @@ describe("parseScript", () => {
     expect(dialogues[0].text).toBe("ｈｅｌｌｏ １２３");
   });
 
+  it("rawText は全角化せず元の「」の中身をそのまま保持する", () => {
+    const { dialogues } = parseScript("tanaka「hello 123」");
+    expect(dialogues[0].rawText).toBe("hello 123");
+  });
+
   it("複数行の地の文が複数のエントリに分解される", () => {
     const { dialogues } = parseScript("一行目\n二行目\n田中「セリフ」");
-    expect(dialogues[0]).toEqual({ id: 0, character: "", text: "一行目" });
-    expect(dialogues[1]).toEqual({ id: 1, character: "", text: "二行目" });
-    expect(dialogues[2]).toEqual({ id: 2, character: "田中", text: "セリフ" });
+    expect(dialogues[0]).toEqual({
+      id: 0,
+      character: "",
+      text: "一行目",
+      rawText: "一行目",
+    });
+    expect(dialogues[1]).toEqual({
+      id: 1,
+      character: "",
+      text: "二行目",
+      rawText: "二行目",
+    });
+    expect(dialogues[2]).toEqual({
+      id: 2,
+      character: "田中",
+      text: "セリフ",
+      rawText: "セリフ",
+    });
   });
 
   it("キャラ名と「の間の空白は trim でキャラ名から除去される", () => {

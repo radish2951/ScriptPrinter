@@ -4,6 +4,7 @@ import { ScriptSummary } from "./components/ScriptSummary";
 import { ScriptView } from "./components/ScriptView";
 import { toggleCharactersByMatch } from "./lib/characterToggle";
 import { isHighlighted } from "./lib/dialogue";
+import { buildDialogueText, exportFileName } from "./lib/exportDialogue";
 import { parseScript, type ParseWarning } from "./lib/parseScript";
 import { toggleInSet } from "./lib/setOps";
 import type { Dialogue } from "./types";
@@ -72,6 +73,17 @@ export function App() {
     setNoVoice((prev) => toggleInSet(prev, id));
   };
 
+  const exportText = () => {
+    const text = buildDialogueText(dialogues, selected, noVoice);
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = exportFileName(title);
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <>
       <ScriptSummary
@@ -92,7 +104,7 @@ export function App() {
         noVoice={noVoice}
         onToggleNoVoice={toggleNoVoice}
       />
-      <FloatingActions />
+      <FloatingActions onExportText={exportText} />
     </>
   );
 }
