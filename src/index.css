@@ -291,6 +291,39 @@ button.character-dialogue:disabled {
   color: white;
 }
 
+/* 台本下部中央のセリフ送りナビ */
+#scriptNav {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 100;
+  writing-mode: horizontal-tb;
+}
+#scriptNav button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--highlight-color);
+  background: white;
+  color: var(--highlight-color);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+#scriptNav button:hover:not(:disabled) {
+  background: var(--highlight-color);
+  color: white;
+}
+#scriptNav button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 /* 印刷時のスタイル */
 @media print {
   @page {
@@ -310,6 +343,9 @@ button.character-dialogue:disabled {
     display: none;
   }
   #floatingActions {
+    display: none;
+  }
+  #scriptNav {
     display: none;
   }
 }

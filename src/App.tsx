@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FloatingActions } from "./components/FloatingActions";
+import { ScriptNav } from "./components/ScriptNav";
 import { ScriptSummary } from "./components/ScriptSummary";
 import { ScriptView } from "./components/ScriptView";
 import { toggleCharactersByMatch } from "./lib/characterToggle";
@@ -153,6 +154,9 @@ export function App() {
         noVoice={noVoice}
         onToggleNoVoice={toggleNoVoice}
       />
+      {dialogues.length > 0 && (
+        <ScriptNav hasHighlight={dialogueCount > 0} />
+      )}
       <FloatingActions onExportText={exportText} />
     </>
   );
